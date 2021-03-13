@@ -1,20 +1,43 @@
-import React from 'react';
-import { StyleSheet, Text, View, FlatList, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, SafeAreaView, View, KeyboardAvoidingView, TextInput, Keyboard, TouchableOpacity, Dimensions } from 'react-native';
 import AlarmListEntry from './components/AlarmListEntry';
 
+ {/* should save all the info about each alarm (date is changing every time) */}
+const deafultAlarms = ['first', 'second', 'third'];
+
 export default function App() {
+  const [alarm, setAlarm] = useState('');
+  const [alarms, setAlarms] = useState(deafultAlarms);
+
+  const handleAddAlarm = () => {
+    Keyboard.dismiss();
+    setAlarms([...alarms, alarm]);
+    setAlarm('');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>My alarms:</Text>
-      <AlarmListEntry name='first' time={new Date()} enabled={true} />
-      {/* <FlatList data={[
-          { name: 'first', time: new Date(), enabled: false },
-          { name: 'second', time: new Date(), enabled: true },
-          { name: 'third', time: new Date(), enabled: true },
-        ]}
-        renderItem={({ item }) => (<AlarmListEntry name='first' time={new Date()} enabled={true} />)}
-        keyExtractor={(item, index) => index.toString()}
-      /> */}
+         {/* should be on top of screen */}
+        <Text style={styles.sectionTitle}>My alarms:</Text>
+        {
+          alarms.map((item, index) => {
+            return (
+              <AlarmListEntry key={index} name={item} time={new Date()} enabled={false}/>
+              )
+            })
+        }
+  
+      {/* behivor should be 'padding' for ios + keyboard stil hiding stuff */}
+      <KeyboardAvoidingView behavior='height' style={styles.createAlarmWrapper}>
+        <TextInput style={styles.input} placeholder='create a new alarm' value={alarm} onChangeText={text => setAlarm(text)}/>
+
+        <TouchableOpacity onPress={() => handleAddAlarm()}>
+          <View style={styles.createAlarmButtonWrapper}>
+            <Text style={styles.addAlarmButton}>+</Text>
+          </View>
+        </TouchableOpacity>
+
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -24,8 +47,42 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    height: Dimensions.get('window').height - 200,
+    backgroundColor: '#EAEAEA',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  sectionTitle: {
+    color: '#000000',
+    marginBottom: 20,
+  },
+  createAlarmWrapper: {
+    position: 'absolute',
+    bottom: 60,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  input: {
+    width: 250,
+    height: 50,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    backgroundColor: '#FFF',
+    borderRadius: 60,
+    borderColor: '#C0C0C0',
+    borderWidth: 1,
+  },
+  createAlarmButtonWrapper: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#C0C0C0',
+    borderWidth: 1,
+  },
+  addAlarmButton: {},
 });
