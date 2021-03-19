@@ -4,79 +4,76 @@ import {
     Text,
     SafeAreaView,
     View,
-    KeyboardAvoidingView,
-    TextInput,
-    Keyboard,
     TouchableOpacity,
     Dimensions,
+    FlatList,
 } from 'react-native';
+import AlarmInput from './components/AlarmInput';
 import AlarmListEntry from './components/AlarmListEntry';
+import { IAlarm } from './interfaces/alarm';
 
-interface IAlarm {
-    name: string;
-    time: Date;
-}
-
-/* should save all the info about each alarm (date is changing every time) */
-
-// const deafultAlarms = ['first', 'second', 'third'];
 const deafultAlarms: IAlarm[] = [
     { name: 'first', time: new Date() },
     { name: 'second', time: new Date() },
+    { name: 'third', time: new Date() },
+    { name: 'fourth', time: new Date() },
+    { name: 'fifth', time: new Date() },
+    { name: 'sixth', time: new Date() },
 ];
 
-export default function App() {
-    const [alarm, setAlarm] = useState<IAlarm | null>(null);
+const App = () => {
+    const [isAddingAlarm, setIsAddingAlarm] = useState(false);
     const [alarms, setAlarms] = useState(deafultAlarms);
 
     const handleAddAlarm = () => {
-        Keyboard.dismiss();
-        if (alarm) {
-            setAlarms([...alarms, alarm]);
-            setAlarm(null);
-        }
+        setIsAddingAlarm(true);
     };
+
+    const handleCancelAlarmCreation = () => {
+        setIsAddingAlarm(false);
+    };
+
+    const handleAlarmCreate = (alarm: IAlarm) => {
+        setAlarms(oldAlarms => [alarm, ...oldAlarms]);
+        setIsAddingAlarm(false);
+    };
+
+    const renderItem = ({ item }: any) => (
+        <AlarmListEntry name={item.name} time={item.time} enabled={false} />
+    );
 
     return (
         <SafeAreaView style={styles.container}>
             {/* should be on top of screen */}
-            <Text style={styles.sectionTitle}>My alarms:</Text>
-            {alarms.map((item, index) => {
-                return (
-                    <AlarmListEntry
-                        key={index}
-                        name={item.name}
-                        time={item.time}
-                        enabled={false}
-                    />
-                );
-            })}
+            <View style={styles.alarmsContainer}>
+                <Text style={styles.sectionTitle}>My alarms:</Text>
 
-            {/* behivor should be 'padding' for ios + keyboard stil hiding stuff */}
-            <KeyboardAvoidingView
-                behavior="height"
-                style={styles.createAlarmWrapper}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="create a new alarm"
-                    value={alarm?.name}
-                    onChangeText={text =>
-                        setAlarm({ name: text, time: new Date() })
-                    }
+                <FlatList
+                    data={alarms}
+                    renderItem={renderItem}
+                    keyExtractor={(_item, index) => index.toString()}
                 />
+            </View>
 
+            <View style={styles.addAlarmContainer}>
                 <TouchableOpacity onPress={() => handleAddAlarm()}>
                     <View style={styles.createAlarmButtonWrapper}>
                         <Text style={styles.addAlarmButton}>+</Text>
                     </View>
                 </TouchableOpacity>
-            </KeyboardAvoidingView>
+            </View>
+            <AlarmInput
+                visible={isAddingAlarm}
+                onCancel={handleCancelAlarmCreation}
+                onCreate={handleAlarmCreate}
+            />
         </SafeAreaView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
+        position: 'relative',
         flex: 1,
         height: Dimensions.get('window').height - 200,
         backgroundColor: '#EAEAEA',
@@ -85,7 +82,15 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         color: '#000000',
-        marginBottom: 20,
+        margin: 20,
+        fontSize: 18,
+    },
+    alarmsContainer: {
+        height: '100%',
+    },
+    addAlarmContainer: {
+        position: 'absolute',
+        bottom: 25,
     },
     createAlarmWrapper: {
         position: 'absolute',
@@ -108,12 +113,17 @@ const styles = StyleSheet.create({
     createAlarmButtonWrapper: {
         width: 50,
         height: 50,
-        backgroundColor: '#FFF',
+        backgroundColor: 'seagreen',
         borderRadius: 50,
         justifyContent: 'center',
         alignItems: 'center',
         borderColor: '#C0C0C0',
         borderWidth: 1,
     },
-    addAlarmButton: {},
+    addAlarmButton: {
+        fontSize: 25,
+        color: 'white',
+    },
 });
+
+export default App;

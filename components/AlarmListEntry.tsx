@@ -7,39 +7,42 @@ export interface IAlarmListEntryProps {
     enabled: boolean;
 }
 
-export default function AlarmListEntry(props: IAlarmListEntryProps) {
+const AlarmListEntry = (props: IAlarmListEntryProps) => {
     const [isEnabled, setIsEnabled] = useState(props.enabled);
     const toggleSwitch = () => setIsEnabled(!isEnabled);
 
     return (
         <View style={styles.item}>
-            <Switch
-                style={{ flex: 1 }}
-                onValueChange={toggleSwitch}
-                value={isEnabled}
-            />
-            <Text style={{ flex: 3, alignContent: 'center' }}>
+            <Text style={{ flex: 4, alignContent: 'center' }}>
                 {props.name}
             </Text>
             <Text
                 style={{
                     flex: 1,
-                }}>{`${props.time.getHours()}:${props.time.getMinutes()}`}</Text>
+                }}>
+                {`${props.time.getHours()}:${props.time.getMinutes()}`}
+            </Text>
+            <Switch
+                style={{ flex: 1 }}
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+            />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     item: {
-        width: '90%',
+        width: '100%',
+        height: 80,
         backgroundColor: '#FFFFFF',
         padding: 15,
-        borderRadius: 15,
-        borderColor: '#000000',
+        borderColor: '#c0c0c0',
         borderWidth: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-evenly',
-        marginBottom: 10,
+        justifyContent: 'space-between',
     },
 });
+
+export default AlarmListEntry;
