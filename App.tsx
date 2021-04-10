@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
     StyleSheet,
     Text,
@@ -38,9 +39,14 @@ const App = () => {
         setIsAddingAlarm(false);
     };
 
-    const renderItem = ({ item }: any) => (
-        <AlarmListEntry name={item.name} time={item.time} enabled={false} />
-    );
+    const renderItem = ({ item }: any) => {
+        return (
+            <AlarmListEntry name={item.name} time={item.time} enabled={false} />
+        );
+    };
+
+    // TODO : look at this issue: https://github.com/facebook/react-native/issues/8655
+    const renderSeparator = () => <View style={styles.itemSeperator} />;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -52,6 +58,8 @@ const App = () => {
                     data={alarms}
                     renderItem={renderItem}
                     keyExtractor={(_item, index) => index.toString()}
+                    ListFooterComponent={<View style={styles.item} />}
+                    ItemSeparatorComponent={renderSeparator}
                 />
             </View>
 
@@ -76,14 +84,18 @@ const styles = StyleSheet.create({
         position: 'relative',
         flex: 1,
         height: Dimensions.get('window').height - 200,
-        backgroundColor: '#EAEAEA',
+        backgroundColor: 'white',
+        // backgroundColor: '#EAEAEA',
         alignItems: 'center',
         justifyContent: 'center',
     },
     sectionTitle: {
+        height: 80,
         color: '#000000',
-        margin: 20,
+        backgroundColor: '#d81b60',
+        padding: 20,
         fontSize: 18,
+        alignContent: 'center',
     },
     alarmsContainer: {
         height: '100%',
@@ -123,6 +135,20 @@ const styles = StyleSheet.create({
     addAlarmButton: {
         fontSize: 25,
         color: 'white',
+    },
+    item: {
+        width: '100%',
+        height: 80,
+        backgroundColor: '#FFFFFF',
+        padding: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    itemSeperator: {
+        borderBottomColor: '#bbb',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        marginVertical: 1,
     },
 });
 

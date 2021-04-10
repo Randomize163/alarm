@@ -13,35 +13,33 @@ const AlarmListEntry = (props: IAlarmListEntryProps) => {
 
     return (
         <View style={styles.item}>
-            <Text style={{ flex: 4, alignContent: 'center' }}>
-                {props.name}
-            </Text>
-            <Text
-                style={{
-                    flex: 1,
-                }}>
+            <Text style={styles.alarmName}>{props.name}</Text>
+            <Text style={styles.alarmSmallItem}>
                 {`${props.time.getHours()}:${props.time.getMinutes()}`}
             </Text>
             <Switch
-                style={{ flex: 1 }}
+                style={styles.alarmSmallItem}
                 onValueChange={toggleSwitch}
                 value={isEnabled}
             />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     item: {
         width: '100%',
         height: 80,
-        backgroundColor: '#FFFFFF',
         padding: 15,
-        borderColor: '#c0c0c0',
-        borderWidth: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    alarmName: {
+        flex: 4,
+    },
+    alarmSmallItem: {
+        flex: 1,
     },
 });
 
